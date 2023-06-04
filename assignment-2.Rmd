@@ -1,0 +1,992 @@
+---
+editor_options:
+  markdown:
+    wrap: 72
+output: pdf_document
+---
+
+**University of Edinburgh**
+
+**School of Mathematics**
+
+**Bayesian Data Analysis, 2022/2023, Semester 2**
+
+**Assignment 2**
+
+**IMPORTANT INFORMATION ABOUT THE ASSIGNMENT**
+
+**In this paragraph, we summarize the essential information about this
+assignment. The format and rules for this assignment are different from
+your other courses, so please pay attention.**
+
+**1) Deadline: The deadline for submitting your solutions to this
+assignment is the 17 March 12:00 noon Edinburgh time.**
+
+**2) Format: You will need to submit your work as 2 components: a PDF
+report, and your R Markdown (.Rmd) notebook. There will be two separate
+submission systems on Learn: Gradescope for the report in PDF format,
+and a Learn assignment for the code in Rmd format. You need to write
+your solutions into this R Markdown notebook (code in R chunks and
+explanations in Markdown chunks), and then select Knit/Knit to PDF in
+RStudio to create a PDF report.**
+
+![](knit_to_PDF.jpg){width="192"}
+
+**The compiled PDF needs to contain everything in this notebook, with
+your code sections clearly visible (not hidden), and the output of your
+code included. Reports without the code displayed in the PDF, or without
+the output of your code included in the PDF will be marked as 0, with
+the only feedback "Report did not meet submission requirements".**
+
+**You need to upload this PDF in Gradescope submission system, and your
+Rmd file in the Learn assignment submission system. You will be required
+to tag every sub question on Gradescope.**
+
+**Some key points that are different from other courses:**
+
+**a) Your report needs to contain written explanation for each question
+that you solve, and some numbers or plots showing your results.
+Solutions without written explanation that clearly demonstrates that you
+understand what you are doing will be marked as 0 irrespectively whether
+the numerics are correct or not.**
+
+**b) Your code has to be possible to run for all questions by the Run
+All in RStudio, and reproduce all of the numerics and plots in your
+report (up to some small randomness due to stochasticity of Monte Carlo
+simulations). The parts of the report that contain material that is not
+reproduced by the code will not be marked (i.e. the score will be 0),
+and the only feedback in this case will be that the results are not
+reproducible from the code.**
+
+![](run_all.jpg){width="375"}
+
+**c) Multiple Submissions are allowed BEFORE THE DEADLINE are allowed
+for both the report, and the code.\
+However, multiple submissions are NOT ALLOWED AFTER THE DEADLINE.\
+YOU WILL NOT BE ABLE TO MAKE ANY CHANGES TO YOUR SUBMISSION AFTER THE
+DEADLINE.\
+Nevertheless, if you did not submit anything before the deadline, then
+you can still submit your work after the deadline, but late penalties
+will apply. The timing of the late penalties will be determined by the
+time you have submitted BOTH the report, and the code (i.e. whichever
+was submitted later counts).**
+
+**We illustrate these rules by some examples:**
+
+**Alice has spent a lot of time and effort on her assignment for BDA.
+Unfortunately she has accidentally introduced a typo in her code in the
+first question, and it did not run using Run All in RStudio. - Alice
+will get 0 for the whole assignment, with the only feedback "Results are
+not reproducible from the code".**
+
+**Bob has spent a lot of time and effort on his assignment for BDA.
+Unfortunately he forgot to submit his code. - Bob will get no personal
+reminder to submit his code. Bob will get 0 for the whole assignment,
+with the only feedback "Results are not reproducible from the code, as
+the code was not submitted."**
+
+**Charles has spent a lot of time and effort on his assignment for BDA.
+He has submitted both his code and report in the correct formats.
+However, he did not include any explanations in the report. Charles will
+get 0 for the whole assignment, with the only feedback "Explanation is
+missing."**
+
+**Denise has spent a lot of time and effort on her assignment for BDA.
+She has submitted her report in the correct format, but thought that she
+can include her code as a link in the report, and upload it online (such
+as Github, or Dropbox). - Denise will get 0 for the whole assignment,
+with the only feedback "Code was not uploaded on Learn."**
+
+**3) Group work: This is an INDIVIDUAL ASSIGNMENT, like a 2 week exam
+for the course. Communication between students about the assignment
+questions is not permitted. Students who submit work that has not been
+done individually will be reported for Academic Misconduct, that can
+lead to serious consequences. Each problem will be marked by a single
+instructor, so we will be able to spot students who copy.**
+
+**4) Piazza: During the periods of the assignments, the instructor will
+change Piazza to allow messaging the instructors only, i.e. students
+will not see each others messages and replies.**
+
+**Only questions regarding clarification of the statement of the
+problems will be answered by the instructors. The instructors will not
+give you any information related to the solution of the problems, such
+questions will be simply answered as "This is not about the statement of
+the problem so we cannot answer your question."**
+
+**THE INSTRUCTORS ARE NOT GOING TO DEBUG YOUR CODE, AND YOU ARE ASSESSED
+ON YOUR ABILITY TO RESOLVE ANY CODING OR TECHNICAL DIFFICULTIES THAT YOU
+ENCOUNTER ON YOUR OWN.**
+
+**5) Office hours: There will be two office hours per week (Monday
+14:00-15:00, and Wednesdays 15:00-16:00) during the 2 weeks for this
+assignment. The links are available on Learn / Course Information. I
+will be happy to discuss the course/workshop materials. However, I will
+only answer questions about the assignment that require clarifying the
+statement of the problems, and will not give you any information about
+the solutions. Students who ask for feedback on their assignment
+solutions during office hours will be removed from the meeting.**
+
+**6) Late submissions and extensions: NO EXTENSIONS ARE ALLOWED FOR THIS
+ASSIGNMENT, AND THERE IS NO SUCH OPTION PROVIDED IN THE ESC SYSTEM.
+Students who have existing Learning Adjustments in Euclid will be
+allowed to have the same adjustments applied to this course as well, but
+they need to apply for this BEFORE THE DEADLINE on the website**
+
+<https://www.ed.ac.uk/student-administration/extensions-special-circumstances>
+
+**by clicking on "Access your learning adjustment". This will be
+approved automatically.**
+
+**Students who submit their work late will have late submission
+penalties applied by the ESC team automatically (this means that even if
+you are 1 second late because of your internet connection was slow, the
+penalties will still apply). The penalties are 5% of the total mark
+deduced for every day of delay started (i.e. one minute of delay counts
+for 1 day). The course instructors do not have any role in setting these
+penalties, we will not be able to change them.**
+
+**7) Please make sure to tag all pages in your submission on Gradescope,
+otherwise we may miss some of your work. Once your upload is complete,
+tagging does not counts towards your submission time (i.e. you won't get
+any late penalties for doing it).**
+
+```{r}
+rm(list = ls(all = TRUE))
+#Do not delete this!
+#It clears all variables to ensure reproducibility
+```
+
+![](car_insurance.jpg)
+
+**Problem 1**
+
+**In this problem, we study a dataset about car insurance.** **This data
+set is based on one-year vehicle insurance policies taken out in 2004 or
+2005. In total, there are 67856 policies, of which 4624 have claims.**
+
+```{r}
+require(insuranceData)
+data(dataCar)
+
+#You may need to set the working directory first before loading the dataset
+#setwd("location of Assignment 1")
+#The first 6 rows of the dataframe
+print.data.frame(dataCar[1:6,])
+
+```
+
+**Description of the columns.**
+
+**veh_value: vehicle value in \$10000s**
+
+**exposure: maximum portion of the vehicle value the insurer may need to
+pay out in case of an incident**
+
+**claimcst0: claim amount (0 if no claim)**
+
+**clm: whether there was a claim during the 1 year duration**
+
+**numclaims: number of claims during the 1 year duration**
+
+**veh_body types: BUS = bus CONVT = convertible COUPE = coupe HBACK =
+hatchback HDTOP = hardtop MCARA = motorized caravan MIBUS = minibus
+PANVN = panel van RDSTR = roadster SEDAN = sedan STNWG = station wagon
+TRUCK = truck UTE = utility**
+
+**gender: F- female, M - male\
+\
+area: a factor with levels A,B,C,D,E, F**
+
+**agecat: age category, 1 (youngest), 2, 3, 4, 5, 6**
+
+**You can use either JAGS, Stan, or INLA for this question.**
+
+**a)[10 marks] Fit a Bayesian logistic regression model on the dataset
+dataCar with**
+
+-   **clm as response,**
+
+-   **a link function of your choice,**
+
+-   **using veh_value, exposure, veh_body, veh_age, gender, area, and
+    agecat as covariates (you can use categorical covariates by
+    converting integers to factors if appropriate).**
+
+**Center and scale the non-categorical covariates.**
+
+**Choose your own prior distributions (do not use default priors), and
+explain the rationale your prior choices, and ensure that the posterior
+is not too sensitive to your prior choice [Hint: look at the induced
+prior on the linear predictor and on the response.]**
+
+**Compute the posterior means of the model parameters, and discuss the
+results.**
+
+```{r}
+# Center and scale the non-categorical covariates
+dataCar$veh_value <- scale(dataCar$veh_value)[,1]
+dataCar$exposure <- scale(dataCar$exposure)[,1]
+# Convert integers to factors for categorical covariates
+dataCar$veh_age <- as.factor(dataCar$veh_age)
+dataCar$agecat <- as.factor(dataCar$agecat)
+
+str(dataCar)
+```
+
+```{r}
+#prior
+library(INLA)
+mm = model.matrix(clm~0+veh_value + exposure + veh_body + 
+  veh_age + gender + area + agecat ,data=dataCar)
+var.beta=25/quantile(rowSums(mm^2),0.05)
+
+formula_clm <- clm ~ veh_value + exposure + veh_body + 
+  veh_age + gender + area + agecat
+
+prior.beta <- list(mean.intercept = 0, prec.intercept = 4e-2,
+                   mean = 0, prec = var.beta)
+prior.beta2 <- list(mean.intercept = 0, prec.intercept = 0.01,
+                   mean = 0, prec = 5)
+
+model <- inla(formula_clm, family = "binomial", data = dataCar, 
+              control.fixed = prior.beta,
+              control.family = list(link = "logit"),
+              control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+              )
+model_test <- inla(formula_clm, family = "binomial", data = dataCar, 
+              control.fixed = prior.beta2,
+              control.family = list(link = "logit"),
+              control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+              )
+summary(model)
+summary(model_test)
+```
+
+Explanation (min 300 characters in your own words, otherwise -5 marks
+for insufficient explanation):
+This study use these covariates, including veh_value, exposure, veh_body, veh_age, gender, area, and agecat.  Also, we used clm as response, and then established Bayesian logistic regression model with logit link function.  
+Firstly, variables are divided into discrete and continuous types for different preprocessing. By observing the data structure, it can be determined that veh_body, veh_age, gender, area, and agecat are discrete variables, so the as.factor function is used to convert the content of the variables into different levels. On the other hand, veh_value and exposure are continuous variables. To eliminate the influence of dimensions and improve interpretability, the scale function is used to center and scale these non-categorical covariates.
+When setting the prior, I use quantile function to decide the precision of beta .To ensure that the posterior is not too sensitive to your prior choice, I conducted a sensitivity test. By comparing models established using different priors, it was found that the posterior means of different variables were basically similar, and the indicators of fit such as DIC were also similar, indicating that the model is not sensitive to the prior setting.
+In the posterior mean analysis of the different variables, the top three variables in absolute value of the coefficients are selected here in order to avoid the interference caused by the large number of variables. Exposure with a posterior mean of 0.54, which has a positive association with the likelihood of a claim. This suggests that a higher exposure (i.e., more time spent driving or being at risk) increases the probability of filing a claim during the 1-year period.  Also, the agecat5 and agecat6 variable has a posterior mean about -0.45, indicating a negative association with the likelihood of a claim. This suggests that individuals in age category 5 and 6(typically older drivers) are less likely to file a claim during the 1-year period compared to the reference age group. This could be due to their more extensive driving experience or more cautious driving habits.
+
+
+**b)[10 marks] Fit a Bayesian Poisson regression model on numclaims as
+response with**
+
+-   **log link function,**
+
+-   **using veh_value, exposure, veh_body, veh_age, gender, area, and
+    agecat as covariates.**
+
+**Center and scale the non-categorical covariates.**
+
+**Choose your own prior distributions (do not use default priors), and
+explain the rationale your prior choices, and ensure that the posterior
+is not too sensitive to your prior choice [Hint: look at the induced
+prior on the linear predictor and the response.]**
+
+**Compute the posterior means of the model parameters, and discuss the
+results.**
+
+```{r}
+formula_numclaims <- numclaims ~ veh_value + exposure + 
+  veh_body + veh_age + gender + area + agecat
+prior.beta <- list(mean.intercept = 0, prec.intercept = 1/log(4)^2,
+                   mean = 0, prec = 1/(log(5)/2)^2)
+prior.beta2 <- list(mean.intercept = 0, prec.intercept = 1,
+                   mean = 0, prec = 1)
+model_poisson <- inla(formula_numclaims, family = "poisson", data = dataCar, 
+                      control.fixed = prior.beta, 
+                      control.family = list(link = "log"),
+                      control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+                      )
+model_poisson_test <- inla(formula_numclaims, family = "poisson", data = dataCar, 
+                      control.fixed = prior.beta2, 
+                      control.family = list(link = "log"),
+                      control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+                      )
+summary(model_poisson)
+summary(model_poisson_test)
+```
+
+Explanation (min 300 characters in your own words, otherwise -5 marks
+for insufficient explanation):
+This part use same covariates as above. Also, we used numclaims as response, and then established Bayesian Poisson model with log link function.  
+For the prior selection, we can see that the usual values for the number of sadness are between 0 and 4, then we can  beta0 on the interval [- ln(4), ln(4)].For the covariates, the most widely spaced variable is exposure, mainly distributed between -2 and 2, so max |xi - mean(x)| = 2. then beta would be in [-ln(5)/2, ln(5)/2].
+To ensure that the posterior is not too sensitive to your prior choice, I conducted a sensitivity test. By comparing models established using different priors, it was found that the posterior means of different variables were basically similar, and the indicators of fit such as DIC were also similar, indicating that the model is not sensitive to the prior setting.
+In the posterior mean analysis of the different variables, the top three variables in absolute value of the coefficients are selected here in order to avoid the interference caused by the large number of variables. ‘veh_bodyCONVT’ with a posterior mean of -0.85, which indicates that convertibles are associated with fewer claims compared to the reference category, This could be due to various factors, such as convertible owners being more cautious drivers or driving less often, leading to fewer accidents and claims. The posterior mean of exposure is 0.52, which suggests a positive association between the exposure variable and the number of claims, and implies that as the exposure increases, the number of claims is also likely to increase, which is a reasonable expectation. ‘veh_bodyUTE’ with a posterior mean of -0.53, which indicates that utility vehicles are associated with fewer claims compared to the reference category. This might be attributed to utility vehicle owners using their vehicles for specific purposes or driving less frequently, leading to a lower probability of accidents and claims.
+
+**c)[10 marks]** **Fit a zero-inflated Bayesian Poisson regression model
+(<https://en.wikipedia.org/wiki/Zero-inflated_model>) on**
+
+-   **numclaims as response,**
+
+-   **with log link function,**
+
+-   **using veh_value, exposure, veh_body, veh_age, gender, area, and
+    agecat as covariates.**
+
+**Center and scale the non-categorical covariates.**
+
+**Choose your own prior distributions (do not use default priors), and
+explain the rationale your prior choices, and ensure that the posterior
+is not too sensitive to your prior choice [Hint: look at the induced
+prior on the linear predictor and the response.]**
+
+**Compute the posterior means of the model parameters, and discuss the
+results.**
+
+```{r}
+formula_numclaims <- numclaims ~ veh_value + exposure + 
+  veh_body + veh_age + gender + area + agecat
+prior.beta <- list(mean.intercept = 0, prec.intercept = 1/log(4)^2,
+                   mean = 0, prec = 1/(log(5)/2)^2)
+prior.beta2 <- list(mean.intercept = 0, prec.intercept = 1,
+                   mean = 0, prec = 1)
+model_zero <- inla(formula_numclaims, 
+                        family = "zeroinflatedpoisson1", 
+                        data = dataCar, 
+                        control.fixed = prior.beta, 
+                        control.family = list(link = "log"),
+                        control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+)
+model_zero_test <- inla(formula_numclaims, 
+                        family = "zeroinflatedpoisson1", 
+                        data = dataCar, 
+                        control.fixed = prior.beta2, 
+                        control.family = list(link = "log"),
+                        control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+)
+summary(model_zero)
+summary(model_zero_test)
+```
+
+Explanation (min 300 characters in your own words, otherwise -5 marks
+for insufficient explanation):
+This part use same covariates as above. Also, we used numclaims as response, and then established Bayesian zero-inflated model with log link function. Since the target variable and covariates are the same as b, the same prior as above is used.
+To ensure that the posterior is not too sensitive to your prior choice, I conducted a sensitivity test. By comparing models established using different priors, it was found that the posterior means of different variables were basically similar, and the indicators of fit such as DIC were also similar, indicating that the model is not sensitive to the prior setting.
+In the posterior mean analysis of the different variables, the top three variables in absolute value of the coefficients are selected here in order to avoid the interference caused by the large number of variables. ‘veh_bodyCONVT’ with a posterior mean of -0.82, which indicates that convertibles are associated with fewer claims compared to the reference category, This could be due to various factors, such as convertible owners being more cautious drivers or driving less often, leading to fewer accidents and claims. The posterior mean of exposure is 0.52, which suggests a positive association between the exposure variable and the number of claims, and implies that as the exposure increases, the number of claims is also likely to increase, which is a reasonable expectation. ‘veh_bodyUTE’ with a posterior mean of -0.51, which indicates that utility vehicles are associated with fewer claims compared to the reference category. This might be attributed to utility vehicle owners using their vehicles for specific purposes or driving less frequently, leading to a lower probability of accidents and claims.
+
+**d)[10 marks] Fit a new model on numclaims in terms of the same
+covariates to improve on the models in part b) or part c) by considering
+interactions between covariates, as well as random effects. Describe
+your new model and justify your choices.**
+
+**Choose your own prior distributions (do not use default priors), and
+explain the rationale your prior choices, and ensure that the posterior
+is not too sensitive to your prior choice [Hint: look at the induced
+prior on the linear predictor and the response.]**
+
+**Compute the posterior means of the model parameters, and discuss the
+results.**
+
+```{r}
+# sigma_obs:
+sigma.unif.prior = "expression:
+b = 20;
+log_dens= (theta>=(-2*log(b)))*(-log(b)-theta/2-log(2))+
+(theta<(-2*log(b)))*(-Inf); return(log_dens);"
+#sigma_alpha:
+sigma.unif.prior.random.eff = "expression:
+b = 20;
+log_dens = (theta>=(-2*log(b)))*(-log(b)-theta/2-log(2)) +
+(theta<(-2*log(b)))*(-Inf); return(log_dens);"
+b=20;
+prec.prior <- list(prec=list(prior = sigma.unif.prior,
+                             initial = -2*log(b)+1,fixed = FALSE))
+prec.prior.random.eff <- list(prec=list(prior =
+                                          sigma.unif.prior.random.eff, 
+                                        initial = -2*log(b)+1, fixed = FALSE))
+formula_random <- numclaims ~ 
+  veh_value + exposure + veh_age + gender + area + agecat +
+  veh_value:exposure + veh_age:gender + area:gender + 
+  f(veh_body, model = "iid",hyper= prec.prior.random.eff) 
+
+prior.beta <- list(mean.intercept = 0, prec.intercept = 1/log(4)^2,
+                   mean = 0, prec = 1/(log(5)/2)^2)
+prior.beta2 <- list(mean.intercept = 0, prec.intercept = 1,
+                   mean = 0, prec = 1)
+
+model_random <- inla(formula_random, family = "poisson", data = dataCar, 
+                     control.fixed=prior.beta,
+                     control.inla = list(strategy = "laplace", npoints = 40),
+                     control.compute = list(config = TRUE,dic = TRUE, cpo=TRUE))
+model_random_test <- inla(formula_random, family = "poisson", data = dataCar, 
+                     control.fixed=prior.beta2,
+                     control.inla = list(strategy = "laplace", npoints = 40),
+                     control.compute = list(config = TRUE,dic = TRUE, cpo=TRUE))
+summary(model_random)
+summary(model_random_test)
+```
+
+Explanation (min 300 characters in your own words, otherwise -5 marks
+for insufficient explanation):
+This part used same covariates as above. Moreover,  veh_body as a random effect and added veh_value:exposure , veh_age:gender , area:gender intersections to the original covariates Also, we used numclaims as response, and then established Bayesian Poisson model with log link function as part b .  Since the target variable and covariates are the same as b, the same prior as above is used.
+To ensure that the posterior is not too sensitive to your prior choice, I conducted a sensitivity test. By comparing models established using different priors, it was found that the posterior means of different variables were basically similar, and the indicators of fit such as DIC were also similar, indicating that the model is not sensitive to the prior setting.
+In the posterior mean analysis of the different variables, the top three variables in absolute value of the coefficients are selected here in order to avoid the interference caused by the large number of variables. The posterior mean of exposure is 0.52, which suggests a positive association between the exposure variable and the number of claims, and implies that as the exposure increases, the number of claims is also likely to increase, which is a reasonable expectation.‘agecat5’ and ‘agecat6’ with the posterior mean of -0.45 ,which represents the fifth and sixth age category. The negative association suggests that policyholders in this age category have fewer claims than those in the reference age category. This could be due to older drivers being more experienced and cautious, leading to fewer accidents and claims.
+
+**e)[10 marks] Perform posterior predictive model checks for your models
+b, c, d (i.e. using replicates).**
+
+**As test functions, use the number of rows in the dataset with
+numclaims equal 0, 1, 2, 3, and 4 (5 test functions).**
+
+**Compute the RMSE values for predicting numclaims based on all 3
+models.**
+
+**Discuss the results.**
+
+```{r}
+nbsamp=1000
+n=nrow(dataCar)
+yrep1 = matrix(0,nrow=n,ncol=nbsamp)
+yrep2 = matrix(0,nrow=n,ncol=nbsamp)
+yrep3 = matrix(0,nrow=n,ncol=nbsamp)
+
+poisson.samples=inla.posterior.sample(nbsamp, result=model_poisson)
+zero.samples=inla.posterior.sample(nbsamp, result=model_zero)
+random.samples=inla.posterior.sample(nbsamp, result=model_random)
+predictor.samples.poisson=inla.posterior.sample.eval(function(...) {Predictor},
+                                                     poisson.samples)
+predictor.samples.zero=inla.posterior.sample.eval(function(...) {Predictor},
+                                                  zero.samples)
+predictor.samples.random=inla.posterior.sample.eval(function(...) {Predictor},
+                                                    random.samples)
+
+for (row.num in 1:n){   
+  yrep1[row.num,]<- rpois(nbsamp,
+                           lambda=exp(predictor.samples.poisson[row.num,]))
+  yrep2[row.num,]<- rpois(nbsamp,
+                           lambda=exp(predictor.samples.zero[row.num,]))
+  yrep3[row.num,]<- rpois(nbsamp,
+                           lambda=exp(predictor.samples.random[row.num,]))
+}
+
+plot.post.pred.test <- function(yrep) {
+  par(mfrow = c(3, 2))
+  par(mar = c(1.7, 1.7, 1.7, 1.7))
+  
+  for (i in 0:4) {
+    numclaims <- apply(yrep, 2, function(x) sum(x == i))
+    hist(numclaims, xlim = c(min(numclaims), max(numclaims)), 
+         main = paste("Numclaims =", i), xlab = "Value", ylab = "Frequency")
+    abline(v = sum(dataCar$numclaims == i), col = 'red', lwd = 2)
+  }
+  
+  par(mfrow = c(1, 1))
+}
+
+plot.post.pred.test(yrep1)
+plot.post.pred.test(yrep2)
+plot.post.pred.test(yrep3)
+```
+
+```{r}
+y_hat_poisson = model_poisson$summary.fitted.values[,1]
+y_hat_zero = model_zero$summary.fitted.values[,1]
+y_hat_random = model_random$summary.fitted.values[,1]
+rmse_poisson <- sqrt(mean((y_hat_poisson - dataCar$numclaims)^2))
+rmse_zero <- sqrt(mean((y_hat_zero - dataCar$numclaims)^2))
+rmse_random <- sqrt(mean((y_hat_random - dataCar$numclaims)^2))
+rmse_poisson;rmse_zero;rmse_random
+```
+Explanation (min 300 characters in your own words, otherwise -5 marks
+for insufficient explanation):
+For model b, it performs well when numclaim is equal to 0, 1, and 4, as indicated by the red line on the histogram. For model c, it performs well when numclaim is equal to 2, 3, and 4, as indicated by the red line on the histogram. For model d, it performs well when numclaim is between 0 and 4, as indicated by the red line on the histogram. However, the RMSE errors for all three models are relatively similar, possibly due to the same priors being used.
+
+![](barcelona.jpg)
+
+**Problem 2 - Barcelona study**
+
+**In this problem, we will use a dataset from the CitieS-Health project
+that provides insight into the impact of air pollution on humans. It is
+comprised of data collected in Barcelona, Spain, and examines various
+environmental variables, such as air pollution levels, and their effects
+on mental health and wellbeing. In addition to environmental factors,
+this dataset also captures self-reported survey data on mental health,
+physical activity, diet habits, and more. From performance in a Stroop
+test (a type of psychological test evaluating attention capacity and
+processing speed) to information on total noise exposure at 55 dB - this
+dataset contains interesting information to understand the link between
+air pollution and human health.**
+
+**We start by loading the dataset.**
+
+```{r}
+ study<-read.csv("Barcelona.csv")
+ head(study)
+```
+
+**Descriptions of some of the covariates:**
+
+| **Column name**                     | **Description**                                                                                    |
+|-------------------------|-----------------------------------------------|
+| **Person_ID**                       | ID of person filling out the survey (integer). Multiple rows for most persons, at different dates. |
+| **date_all**                        | Date of the survey. (Date)                                                                         |
+| **year**                            | Year of the survey. (Integer)                                                                      |
+| **month**                           | Month of the survey. (Integer)                                                                     |
+| **day**                             | Day of the survey. (Integer)                                                                       |
+| **dayoftheweek**                    | Day of the week of the survey. (Integer)                                                           |
+| **hour**                            | Hour of the survey. (Integer)                                                                      |
+| **sadness**                         | Sadness score. (Integer)                                                                           |
+| **wellbeing**                       | Self-reported survey responses regarding wellbeing. (Integer)                                      |
+| **energy**                          | Self-reported survey responses regarding energy levels. (Integer)                                  |
+| **stress**                          | Self-reported survey responses regarding stress levels. (Integer)                                  |
+| **sleep**                           | Self-reported survey responses regarding sleep quality. (Integer)                                  |
+| **hours_out**                       | Self-reported survey responses regarding time spent outdoors. (Integer)                            |
+| **computer_use**                    | Self-reported survey responses regarding computer use. (Yes/No)                                    |
+| **on_a\_diet**                      | Self-reported survey responses regarding diet. (Yes/No)                                            |
+| **alcohol**                         | Self-reported survey responses regarding alcohol consumption. (Yes/No)                             |
+| **drugs**                           | Self-reported survey responses regarding drug use. (Yes/No)                                        |
+| **sick**                            | Self-reported survey responses regarding illness. (Yes/No)                                         |
+| **other_factors**                   | Self-reported survey responses regarding other factors. (Yes/No)                                   |
+| **stroop_test_performance**         | Performance in the Stroop test. (Float)                                                            |
+| **no2bcn_24h**                      | Nitrogen dioxide (NO2) levels in Barcelona over 24 hours. (Float)                                  |
+| **no2bcn_12h**                      | Nitrogen dioxide (NO2) levels in Barcelona over 12 hours. (Float)                                  |
+| **no2gps_24h**                      | Nitrogen dioxide (NO2) levels in GPS locations over 24 hours. (Float)                              |
+| **no2gps_12h**                      | Nitrogen dioxide (NO2) levels in GPS locations over 12 hours. (Float)                              |
+| **no2bcn_12h_x30**                  | Nitrogen dioxide (NO2) levels in Barcelona over 12 hours multiplied by 30. (Float)                 |
+| **no2bcn_24h_x30**                  | Nitrogen dioxide (NO2) levels in Barcelona over 24 hours multiplied by 30. (Float)                 |
+| **no2gps_12h_x30**                  | Nitrogen dioxide (NO2) levels in GPS locations over 12 hours multiplied by 30. (Float)             |
+| **no2gps_24h_x30**                  | Nitrogen dioxide (NO2) levels in GPS locations over 24 hours multiplied by 30. (Float)             |
+| **min_gps**                         | Minimum GPS location. (Float)                                                                      |
+| **district**                        | District of Barcelona where the survey was conducted. (String)                                     |
+| **education**                       | Educational level of the participant. (String)                                                     |
+| **maxwindspeed_12h**                | Maximum wind speed over 12 hours. (Float)                                                          |
+| **access_greenbluespaces_300mbuff** | Access to green and blue spaces within a 300m buffer. (Yes/No)                                     |
+| **microgram3**                      | Micrograms per cubic meter of pollutants. (Float)                                                  |
+| **age_yrs**                         | Age of the participant in years. (Integer)                                                         |
+| **yearbirth**                       | Year of birth of the participant. (Integer)                                                        |
+| **smoke**                           | Self-reported survey responses regarding smoking status. (Yes/No)                                  |
+| **gender**                          | Gender of the participant. (Woman/Man)                                                             |
+| **hour_gps**                        | Hour of the GPS location. (Integer)                                                                |
+| **pm25bcn**                         | Particulate matter (PM2.5) levels in Barcelona. (Float)                                            |
+| **BCmicrog**                        | Black carbon (BC) levels in micrograms. (Float)                                                    |
+| **sec_noise55_day**                 | Seconds of noise over 55 minutes in a day. (Integer)                                               |
+| **sec_noise65_day**                 | Seconds of noise over 65 minutes in a day. (Integer)                                               |
+| **tmean_24h**                       | Mean temperature over 24 hours. (Float)                                                            |
+| **tmean_12h**                       | Mean temperature over 12 hours. (Float)                                                            |
+| **humi_24h**                        | Humidity over 24 hours. (Float)                                                                    |
+| **humi_12h**                        | Humidity over 12 hours. (Float)                                                                    |
+| **pressure_24h**                    | Pressure over 24 hours. (Float)                                                                    |
+| **pressure_12h**                    | Pressure over 12 hours. (Float)                                                                    |
+| **precip_24h**                      | Precipitation over 24 hours. (Float)                                                               |
+| **precip_12h**                      | Precipitation over 12 hours. (Float)                                                               |
+| **precip_12h_binary**               | Binary value for precipitation over 12 hours. (Integer)                                            |
+| **precip_24h_binary**               | Binary value for precipitation over 24 hours. (Integer)                                            |
+| **maxwindspeed_24h**                | Maximum wind speed over 24 hours. (Float)                                                          |
+
+**You can use either JAGS, Stan, or INLA for this question.**
+
+**a)[10 marks] Fit a Bayesian linear regression model**
+
+-   **on the logarithm of stroop_test_performance as response,**
+
+-   **using the following covariates: gender, on_a\_diet, alcohol,
+    drugs, sick, other_factors, educational, smoke, no2gps_24h,
+    maxwindspeed_24h, precip_24h, sec_noise55_day,
+    access_greenbluespaces_300mbuff, age_yrs, tmean_24h (you can use
+    categorical covariates by converting integers to factors if
+    appropriate).**
+
+**Center and scale the non-categorical covariates.**
+
+**Choose your own prior distributions (do not use default priors), and
+explain the rationale your prior choices, and ensure that the posterior
+is not too sensitive to your prior choice [Hint: look at the induced
+prior on the response.]**
+
+**Compute the posterior means of the model parameters, and interpret
+their meaning.**
+
+```{r}
+#remove the missing value
+study <- study[apply(study != "", 1, all), ]
+#calculate the mean and sd
+vars_to_scale <- c('no2gps_24h', 'maxwindspeed_24h', 'precip_24h', 'sec_noise55_day', 'age_yrs', 'tmean_24h')
+mean_sd_list <- lapply(vars_to_scale, function(var) {
+  list(mean = mean(study[[var]]), sd = sd(study[[var]]))
+})
+# Center and scale the non-categorical covariates
+study$no2gps_24h <- scale(study$no2gps_24h)[,1]
+study$maxwindspeed_24h <- scale(study$maxwindspeed_24h)[,1]
+study$precip_24h <- scale(study$precip_24h)[,1]
+study$sec_noise55_day <- scale(study$sec_noise55_day)[,1]
+study$age_yrs <- scale(study$age_yrs)[,1]
+study$tmean_24h <- scale(study$tmean_24h)[,1]
+
+# Convert integers to factors for categorical covariates
+cols_to_factor <- c("gender", "on_a_diet", "alcohol", "drugs", "sick", "other_factors", 
+                    "education", "smoke", "access_greenbluespaces_300mbuff")
+study[cols_to_factor] <- lapply(study[cols_to_factor], as.factor)
+
+str(study)
+```
+
+```{r}
+library(INLA)
+formula<- log(stroop_test_performance) ~ gender+on_a_diet+
+  alcohol+drugs+sick+other_factors+education+
+  smoke+no2gps_24h+maxwindspeed_24h+precip_24h+sec_noise55_day+
+  access_greenbluespaces_300mbuff+age_yrs+tmean_24h
+
+prior.beta <- list(mean.intercept = 0, prec.intercept = 0.001,
+                   mean = 0, prec = 0.001)
+prior.beta2 <- list(mean.intercept = 0, prec.intercept = 1,
+                   mean = 0, prec = 1)
+
+model_linear <- inla(formula, family = "gaussian", data =study, 
+                      control.fixed = prior.beta, 
+                      control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+)
+model_linear_test <- inla(formula, family = "gaussian", data =study, 
+                      control.fixed = prior.beta2, 
+                      control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+)
+summary(model_linear)
+summary(model_linear_test)
+```
+```{r}
+cat("The marginal log-likelihood value is:", model_linear$mlik[1], "\n")
+cat("The NSLCPO value is:", -sum(log(model_linear$cpo$cpo)), "\n")
+cat("The DIC value is:", model_linear$dic$dic, "\n")
+```
+Explanation (min 300 characters in your own words, otherwise -5 marks
+for insufficient explanation):
+In order to understand the link between air pollution and human health, a study has been conducted using data collected in Barcelona, Spain. This study incorporates partial environmental variables and self-reported survey data as covariates, including gender, on_a_diet, alcohol, drugs, sick, other_factors, educational, smoke, no2gps_24h, maxwindspeed_24h, precip_24h, sec_noise55_day, access_greenbluespaces_300mbuff, age_yrs, and tmean_24h. The participants' performance in a Stroop test, which is a psychological test that evaluates attention capacity and processing speed, was assessed and scored. A Bayesian linear regression model was then established to predict the logarithm of stroop_test_performance based on these variables. 
+Firstly, variables are divided into discrete and continuous types for different preprocessing. By observing the data structure, it can be determined that gender, on_a_diet, alcohol, drugs, sick, other_factors, education, smoke, and access_greenbluespaces_300mbuff are discrete variables, so the as.factor function is used to convert the content of the variables into different levels. On the other hand, no2gps_24h, maxwindspeed_24h, precip_24h, sec_noise55_day, age_yrs, and tmean_24h are continuous variables. To eliminate the influence of dimensions and improve interpretability, the scale function is used to center and scale these non-categorical covariates.
+When setting the prior, make the intercept and beta use the classical setting method with a mean of 0 and an precision of 0.001.To ensure that the posterior is not too sensitive to your prior choice, I conducted a sensitivity test. By comparing models established using different priors, it was found that the posterior means of different variables were basically similar, and the indicators of fit such as DIC were also similar, indicating that the model is not sensitive to the prior setting.
+In the posterior mean analysis of the different variables, the top three variables in absolute value of the coefficients are selected here in order to avoid the interference caused by the large number of variables. With a posterior mean of 0.14, a university-level education has a positive association with the logarithm of Stroop test performance. This suggests that people with higher education levels tend to perform better on the Stroop test, potentially due to enhanced cognitive abilities. ‘age_yrs’ has a posterior mean about -0.12,which is a strong negative association with the logarithm of Stroop test performance. This implies that as individuals grow older, their attention capacity and processing speed tend to decline. ‘drugsYes’ has a posterior mean of -0.07, which indicates a negative association between drug usage and the logarithm of Stroop test performance. This implies that individuals who use drugs are likely to experience reduced attention capacity and processing speed.
+
+**b)[10 marks] Fit a Bayesian Poisson GLM**
+
+-   **for sadness as response,**
+
+-   **log link function,**
+
+-   **using the following covariates: gender, on_a\_diet, alcohol,
+    drugs, sick, other_factors, educational, smoke, no2gps_24h,
+    maxwindspeed_24h, precip_24h, sec_noise55_day,
+    access_greenbluespaces_300mbuff, age_yrs, tmean_24h (you can use
+    categorical covariates by converting integers to factors if
+    appropriate).**
+
+**Center and scale the non-categorical covariates.**
+
+**Choose your own prior distributions (do not use default priors), and
+explain the rationale your prior choices, and ensure that the posterior
+is not too sensitive to your prior choice [Hint: look at the induced
+prior on the response.]**
+
+**Compute the posterior means of the model parameters, and interpret
+their meaning.**
+```{r}
+plot(density(study$sadness))
+```
+
+```{r}
+formula_poisson<- sadness ~ gender+on_a_diet+alcohol+drugs+sick+other_factors+education+
+  smoke+no2gps_24h+maxwindspeed_24h+precip_24h+sec_noise55_day+
+  access_greenbluespaces_300mbuff+age_yrs+tmean_24h
+
+prior.beta <- list(mean.intercept = 0, prec.intercept =  1/(log(15)^2),
+                   mean = 0, prec = 1/(log(5)/2)^2)
+prior.beta2 <- list(mean.intercept = 0, prec.intercept = 1,
+                   mean = 0, prec = 1)
+
+model_poisson <- inla(formula_poisson, family = "poisson", data =study, 
+                      control.fixed = prior.beta, 
+                      control.family = list(link = "log"),
+                      control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+)
+model_poisson_test <- inla(formula_poisson, family = "poisson", data =study, 
+                      control.fixed = prior.beta2, 
+                      control.family = list(link = "log"),
+                      control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+)
+summary(model_poisson)
+summary(model_poisson_test)
+```
+
+```{r}
+cat("The marginal log-likelihood value is:", model_poisson$mlik[1], "\n")
+cat("The NSLCPO value is:", -sum(log(model_poisson$cpo$cpo)), "\n")
+cat("The DIC value is:", model_poisson$dic$dic, "\n")
+```
+
+Explanation (min 300 characters in your own words, otherwise -5 marks
+for insufficient explanation):
+This part use same covariates as above. Also, we used sadness score as response, and then established Bayesian Poisson model with log link function.  
+For the prior selection, from the density plot, we can see that the usual values for the number of sadness are between 0 and 15, then we can  beta0 on the interval [-ln(15), ln(15)].For the covariates, the most widely spaced variable is no2gps_24h, mainly distributed between -2 and 2, so max |xi - mean(x)| = 2. then beta would be in [-ln(5)/2, ln(5)/2].
+To ensure that the posterior is not too sensitive to your prior choice, I conducted a sensitivity test. By comparing models established using different priors, it was found that the posterior means of different variables were basically similar, and the indicators of fit such as DIC were also similar, indicating that the model is not sensitive to the prior setting.
+In the posterior mean analysis of the different variables, the top three variables in absolute value of the coefficients are selected here in order to avoid the interference caused by the large number of variables.  ‘genderOtra' With a posterior mean of -0.52, which means individuals with non-binary genders have a strong negative association with the sadness score. This suggests that non-binary individuals might report lower levels of sadness compared to male and female. Also,’drugsYes' has a posterior mean of 0.17, which indicates a positive association between drug usage and the sadness score. This implies that individuals who use drugs tend to report higher levels of sadness. Drug usage might have an impact on mental health, potentially causing increased feelings of sadness or worsening pre-existing mental health conditions. Thirdly, ‘EducationUniversity' with a posterior mean of 0.17, which has a positive association with the sadness score. This suggests that people with higher education levels might report higher levels of sadness. This may be due to various factors, such as increased stress levels or higher expectations. 
+
+
+**c)[10 marks] Incorporate Person_ID as a random effects into the models
+a.) and b.).**
+
+**Choose your own prior distributions for this random effect (do not use
+default priors).**
+
+**Compare the posterior means of the parameter values with a) and b).**
+
+**Discuss the changes that happened due to using random effects.**
+
+```{r}
+sigma.unif.prior = "expression:
+b = 20;
+log_dens= (theta>=(-2*log(b)))*(-log(b)-theta/2-log(2))+
+(theta<(-2*log(b)))*(-Inf); return(log_dens);"
+#sigma_alpha:
+sigma.unif.prior.random.eff = "expression:
+b = 20;
+log_dens = (theta>=(-2*log(b)))*(-log(b)-theta/2-log(2)) +
+(theta<(-2*log(b)))*(-Inf); return(log_dens);"
+b=20;
+prec.prior <- list(prec=list(prior = sigma.unif.prior,
+                             initial = -2*log(b)+1,fixed = FALSE))
+prec.prior.random.eff <- list(prec=list(prior =
+                                          sigma.unif.prior.random.eff, 
+                                        initial = -2*log(b)+1, fixed = FALSE))
+```
+
+```{r}
+study$Person_ID <- as.factor(study$Person_ID)
+formula.linear.random<- log(stroop_test_performance) ~ 
+  gender+on_a_diet+alcohol+drugs+sick+other_factors+education+
+  smoke+no2gps_24h+maxwindspeed_24h+precip_24h+sec_noise55_day+
+  access_greenbluespaces_300mbuff+age_yrs+tmean_24h+
+  f(Person_ID, model = "iid",hyper= prec.prior.random.eff) 
+
+prior.beta <- list(mean.intercept = 0, prec.intercept = 0.001,
+                   mean = 0, prec = 0.001)
+
+model.linear.random <- inla(formula.linear.random, family = "gaussian", data =study, 
+                     control.fixed = prior.beta, 
+                     control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+)
+summary(model.linear.random)
+
+```
+
+```{r}
+cat("The marginal log-likelihood value is:", model.linear.random$mlik[1], "\n")
+cat("The NSLCPO value is:", -sum(log(model.linear.random$cpo$cpo)), "\n")
+cat("The DIC value is:", model.linear.random$dic$dic, "\n")
+```
+
+```{r}
+formula.poisson.random<- sadness ~ gender+on_a_diet+alcohol+
+  drugs+sick+other_factors+education+
+  smoke+no2gps_24h+maxwindspeed_24h+precip_24h+sec_noise55_day+
+  access_greenbluespaces_300mbuff+age_yrs+tmean_24h+
+  f(Person_ID, model = "iid",hyper= prec.prior.random.eff) 
+
+prior.beta <- list(mean.intercept = 0, prec.intercept =  1/(log(15)^2),
+                   mean = 0, prec = 1/(log(5)/2)^2)
+
+model.poisson.random <- inla(formula.poisson.random, family = "poisson", data =study, 
+                      control.fixed = prior.beta, 
+                      control.family = list(link = "log"),
+                      control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+)
+summary(model.poisson.random)
+```
+
+```{r}
+cat("The marginal log-likelihood value is:", model.poisson.random$mlik[1], "\n")
+cat("The NSLCPO value is:", -sum(log(model.poisson.random$cpo$cpo)), "\n")
+cat("The DIC value is:", model.poisson.random$dic$dic, "\n")
+```
+
+Explanation (min 300 characters in your own words, otherwise -5 marks
+for insufficient explanation):
+Based on the first two parts, this section incorporates Person_ID as a random effect into the covariates, while keeping the response and model family unchanged. 
+In the posterior mean analysis of the different variables, the top three variables in absolute value of the coefficients are selected here in order to avoid the interference caused by the large number of variables.
+The inclusion of the person ID as a random effect accounts for the variability between individuals, which can affect the relationships between the covariates and the outcome variable. By doing so, the model can better capture the within-person variations and isolate the effects of the other covariates.
+For the Bayesian linear model, after adding person_id as a random effect to the model, we can see that the top three posterior means of importance do not change, namely educationUniversity, age_yrs and drugsYes. 
+Compare with above model, the posterior mean for age remains similar, suggesting that the relationship between age and the outcome variable is consistent, regardless of the inclusion of the person ID as a random effect. On the other hand, Education (university level) now has a higher posterior mean, indicating a stronger positive association with the outcome variable. In contrast, the drugs covariate has a reduced posterior mean, suggesting a weaker negative association. The change in the posterior means for education and drug use indicates that accounting for individual variability has an impact on the associations between these covariates and the outcome variable. This highlights the importance of considering random effects in models when there is a potential for unobserved individual differences that may influence the relationships between the covariates and the outcome.
+For the Bayesian poisson model with random effect, with the addition of person_id as a random effect in the model, we can see that the first three posterior means of importance change, from genderOtra, drugsYes, educationUniversity to educationUniversity, genderOtra, tmean_24h.
+The posterior mean for non-binary individuals(genderOtra) changed closer to 0, indicating that the negative association with the sadness score is still present but less strong. This could be due to individual differences among non-binary individuals that were not captured in the original model. For ‘educationUniversity’, the posterior mean increased, suggesting that the positive association between higher education levels and sadness scores becomes stronger when accounting for individual differences. Additionally, with a posterior mean of -0.24, there is a negative association between mean temperature and sadness scores. 
+Finally, We can see that the value of dic has become smaller in both model and that the addition of the random effect has made the model more effective.
+
+**d)[10 marks] Do posterior predictive checks (i.e. using replicates)
+for the sadness score for your models with or without random effects.
+Explain the choice of test functions that you used.**
+
+**Compute the posterior means of the response variable using the
+original covariates, and use this to compute the RMSE values for both
+models (i.e. with, or without random effects).**
+
+**Discuss the results.**
+
+```{r}
+summary(model_poisson)
+summary(model.poisson.random)
+```
+
+```{r}
+nbsamp=1000
+n=nrow(study)
+yrep1 = matrix(0,nrow=n,ncol=nbsamp)
+yrep2 = matrix(0,nrow=n,ncol=nbsamp)
+
+poisson.samples=inla.posterior.sample(n=nbsamp, result=model_poisson)
+random.samples=inla.posterior.sample(n=nbsamp, result=model.poisson.random)
+
+predictor.samples.poisson=inla.posterior.sample.eval(function(...) {Predictor},
+                                                     poisson.samples)
+predictor.samples.random=inla.posterior.sample.eval(function(...) {Predictor},
+                                                    random.samples)
+
+for (row.num in 1:n){   
+  yrep1[row.num,]<- rpois(n=nbsamp,
+                          lambda=exp(predictor.samples.poisson[row.num,]))
+  yrep2[row.num,]<- rpois(n=nbsamp,
+                          lambda=exp(predictor.samples.random[row.num,]))
+}
+
+plot.post.pred.test<-function(yrep){
+  sadness.per.gender.samples=aggregate(yrep,list(study$gender), mean)
+  sadness.per.gender.in.data=aggregate(study$sadness,list(study$gender), mean)
+  par(mfrow=c(3,1))
+  par(mar=c(1.7,1.7,1.7,1.7))
+  for(it in 1:3) { 
+    x=as.numeric(sadness.per.gender.samples[it,2:(nbsamp+1)])
+    sadness.on.data=sadness.per.gender.in.data[it,2]
+    xmin=min(min(x),sadness.on.data)
+    xmax=max(max(x),sadness.on.data)
+    hist(as.numeric(sadness.per.gender.samples[it,2:(nbsamp+1)]),
+       col="gray40",main=sadness.per.gender.samples[it,1],xlim=c(xmin,xmax))
+    abline(v=sadness.per.gender.in.data[it,2],col="red",lwd=2) 
+  }
+  par(mfrow=c(1,1))
+}
+plot.post.pred.test(yrep1)
+plot.post.pred.test(yrep2)
+```
+```{r}
+y_hat_poisson = model_poisson$summary.fitted.values[,1]
+y_hat_random = model.poisson.random$summary.fitted.values[,1]
+rmse_poisson <- sqrt(mean((y_hat_poisson - study$sadness)^2))
+rmse_random <- sqrt(mean((y_hat_random - study$sadness)^2))
+cat("RMSE without random effect:", rmse_poisson, "\n")
+cat("RMSE with random effect:", rmse_random, "\n")
+```
+
+Explanation (min 300 characters in your own words, otherwise -5 marks
+for insufficient explanation):
+In this part, we need to do posterior predictive checks for the sadness score for models with or without random effects. 
+Observing the posterior means, it can be seen that the variable with the largest absolute value is "genderOtra". Therefore, I chose this variable as the test selection. I have used histograms to represent the distribution of sadness predictions by gender, while the lines represent the mean values for the three genders. From the figure, it can be observed that for both models, the red lines for different genders fall in the middle of the histograms, indicating a good fit of the models. For the three different genders, the sadness index for men and women are similar, around 6.8, while the sadness index for "other" is significantly lower, around 3.
+In terms of RMSE, the value without considering random effects is around 3.58, while after incorporating Person_ID as a random effect, the RMSE decreases to around 3.2. This indicates that the random effect has a positive impact on the model.
+
+**e)[10 marks]**
+
+**Plot the posterior predictive distributions for
+stroop_test_performance and sadness for the random effect models in part
+c) for the following new person in the dataset:**
+
+**Person_ID=286, gender="Woman", on_a\_diet="Yes", alcohol="No",
+drugs="No", sick="No", other_factors="No", education="University",
+smoke="Yes", no2gps_24h=80, maxwindspeed_24h=10, precip_24h=50,
+sec_noise55_day=10000, access_greenbluespaces_300mbuff="Yes",
+age_yrs=40, tmean_24h=25**
+
+**In the case of stroop_test_performance, plot the estimated density,
+while for sadness, plot a histogram.**
+
+**Compute the posterior predictive mean, and standard deviation.**
+
+**Discuss the results.**
+
+```{r}
+new_person <- data.frame(
+  Person_ID = factor("286"),
+  gender = factor("Woman"),
+  on_a_diet = factor("Yes"),
+  alcohol = factor("No"),
+  drugs = factor("No"),
+  sick = factor("No"),
+  other_factors = factor("No"),
+  education = factor("University"),
+  smoke = factor("Yes"),
+  no2gps_24h = 80,
+  maxwindspeed_24h = 10,
+  precip_24h = 50,
+  sec_noise55_day = 10000,
+  access_greenbluespaces_300mbuff = factor("Yes"),
+  age_yrs = 40,
+  tmean_24h = 25,
+  stroop_test_performance = NA,
+  sadness = NA
+)
+
+# select the used variable
+select.var = c('gender', 'on_a_diet', 'alcohol', 'drugs', 'sick', 'other_factors',
+'education', 'smoke', 'no2gps_24h', 'maxwindspeed_24h', 'precip_24h', 'sec_noise55_day',
+'access_greenbluespaces_300mbuff', 'age_yrs', 'tmean_24h','Person_ID','stroop_test_performance','sadness')
+study.sub = study[, select.var]
+
+# scale the new data
+mean_array <- c()
+sd_array <- c()
+
+for (i in 1:length(mean_sd_list)) {
+  mean_array[i] <- mean_sd_list[[i]]$mean
+  sd_array[i] <- mean_sd_list[[i]]$sd
+}
+mean_sd_df <- data.frame(variable = vars_to_scale, Mean = mean_array, SD =sd_array )
+for (i in 1:nrow(mean_sd_df)) {
+  var <- mean_sd_df$variable[i]
+  new_person[[var]] <- (new_person[[var]] - mean_sd_df$Mean[i]) / mean_sd_df$SD[i]
+}
+#combine the data
+study.sub = rbind(study.sub, new_person)
+
+# use the model with new data
+model.linear.random.new <- inla(formula.linear.random, family = "gaussian", data =study.sub, 
+                            control.fixed = list(mean = 0, prec = 1/100), 
+                            control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+)
+
+model.poisson.random.new <- inla(formula.poisson.random, family = "poisson", data =study.sub, 
+                             control.fixed = list(mean = 0, prec = 1/100), 
+                             control.family = list(link = "log"),
+                             control.compute = list(config = TRUE,cpo=TRUE, dic = TRUE)
+)
+summary(model.linear.random.new)
+summary(model.poisson.random.new)
+```
+
+```{r}
+study.linear.samp=inla.posterior.sample(n=nbsamp, result=model.linear.random.new ,selection= list(Predictor=nrow(study.sub)))
+study.poisson.samp=inla.posterior.sample(n=nbsamp, result=model.poisson.random.new,selection= list(Predictor=nrow(study.sub)))
+
+predictor.linear.samples=exp(unlist(lapply(study.linear.samp, function(x)(x$latent[1]))))
+predictor.poisson.samples=exp(unlist(lapply(study.poisson.samp, function(x)(x$latent[1]))))
+library(ggplot2)
+
+# Plot estimated density for stroop_test_performance
+ggplot() +
+  geom_density(aes(x = predictor.linear.samples), color = "blue", fill = "blue", alpha = 0.5) +
+  labs(title = "Posterior Predictive Distribution for Stroop Test Performance",
+       x = "Stroop Test Performance",
+       y = "Density")
+
+# Plot histogram for sadness
+ggplot() +
+  geom_histogram(aes(x = predictor.poisson.samples), color = "red", fill = "red", alpha = 0.5, bins = 10) +
+  labs(title = "Posterior Predictive Distribution for Sadness",
+       x = "Sadness",
+       y = "Frequency")
+```
+```{r}
+mean(predictor.linear.samples);sd(predictor.linear.samples)
+mean(predictor.poisson.samples);sd(predictor.poisson.samples)
+```
+Explanation (min 300 characters in your own words, otherwise -5 marks
+for insufficient explanation):
+We can see that for the posterior predictive density plot of Stroop Test Performance, there is a high probability that this person's score will be around 40. For the histogram, it is highly likely that this person's sadness value is around 4.5.
+For both models, I calculated the mean and standard deviation. For the Bayesian linear regression, the mean of stroop is 41 and the standard deviation is 7. For the Bayesian Poisson model, the mean of sadness is 4.6 and the standard deviation is 1.4.
+
